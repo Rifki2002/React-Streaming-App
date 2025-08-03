@@ -1,0 +1,20 @@
+.login-body {
+  background-image: url(../../assets/background.png); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  font-family: Arial, sans-serif;
+  color: #FFF;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: 12px;
+    font-size: 14px;
+  }
+}
