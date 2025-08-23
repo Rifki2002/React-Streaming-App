@@ -3,6 +3,7 @@ import logoImg from '../../assets/logo.png';
 import avatarImg from '../../assets/avatar.png';
 import dropdownImg from '../../assets/dropdown.png';
 import './header.css';
+import { Link } from "react-router-dom";
 
 function Header({ className }) {
   return (
@@ -13,8 +14,8 @@ function Header({ className }) {
         <nav className="nav-links">
           <ul>
             <li>Series</li>
-            <li>Film</li>
-            <li>Daftar Saya</li>
+            <li><Link to="/home">Film</Link></li>
+            <li><Link to="/mylist">Daftar Saya</Link></li>
           </ul>
         </nav>
 

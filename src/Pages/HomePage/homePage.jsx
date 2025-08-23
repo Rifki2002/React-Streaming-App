@@ -20,6 +20,7 @@ function HomePage() {
         <MovieCarousel category="topRating" label="Top Rating Film dan Series Hari ini" />
         <MovieCarousel category="trending" label="Film Trending" />
         <MovieCarousel category="newRelease" label="Rilis Terbaru" />
+        
         <Footer />
       </div>
     </div>

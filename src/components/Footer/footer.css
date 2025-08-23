@@ -1,15 +1,17 @@
 .footer {
   position: relative;
   margin-top: 10%;
-  margin-left: auto;
+  margin-left: 0;      /* ✅ remove auto */
+  width: 100%;         /* make it span full width */
 }
 
 .footer-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start; /* ✅ align everything to the left */
   flex-wrap: wrap;
   max-width: 1200px;
-  margin-left: auto;
+  margin-left: 0;      /* ✅ remove auto */
+  padding-left: 40px;  /* add some spacing from the left edge */
 }
 
 .footer-logo img {

@@ -39,6 +39,7 @@
   cursor: pointer;
   font-size: 1rem;
   transition: color 0.2s ease-in-out;
+  color: #FFF;
 }
 
 .nav-links li:hover {
@@ -61,4 +62,18 @@
 .dropdown-icon img {
   width: 12px;
   height: 12px;
+}
+
+.nav-links ul li,
+.nav-links ul li a {
+  color: white;
+  text-decoration: none;
+}
+
+.nav-links ul li a:visited {
+  color: white;
+}
+
+.nav-links ul li a:hover {
+  color: #1f80e0;
 }
