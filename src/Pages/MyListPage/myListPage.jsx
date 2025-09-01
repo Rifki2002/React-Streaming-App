@@ -1,24 +1,25 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 import Header from "../../components/Header/header";
 import Footer from "../../components/Footer/footer";
-import MyList from '../../components/MyList/myList';
-import "./myListPage.css";
+import MyList from "../../components/MyList/myList";
 
 function MyListPage() {
   useEffect(() => {
-    document.body.className = 'home-body';
+    document.body.className = "bg-black text-white min-h-screen m-0"; 
   }, []);
 
   return (
-    <div className="page-container">
+    <div className="flex flex-col min-h-screen font-sans bg-transparent">
       <Header />
 
-      <main className="mylist-wrapper">
-        <h2 className="mylist-title">🎬 Daftar Saya</h2>
+      <main className="flex flex-col items-center flex-1 p-10">
+        <h2 className="text-2xl font-semibold mb-6">🎬 Daftar Saya</h2>
         <MyList />
       </main>
 
-      <Footer />
+      <footer className="text-center">
+        <Footer />
+      </footer>
     </div>
   );
 }
