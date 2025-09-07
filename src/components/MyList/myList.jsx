@@ -1,53 +1,69 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import {
+  getMovies,
+  addMovie,
+  updateMovie,
+  deleteMovie,
+} from "../../api";
 
 function MyList() {
-  const [movies, setMovies] = useState([
-    { id: 1, title: "Inception", genre: "Sci-Fi" },
-    { id: 2, title: "Interstellar", genre: "Sci-Fi" },
-  ]);
-
+  const [movies, setMovies] = useState([]);
   const [title, setTitle] = useState("");
-  const [genre, setGenre] = useState("");
+  const [year, setYear] = useState("");
+  const [rating, setRating] = useState("");
+  const [poster, setPoster] = useState("");
   const [editId, setEditId] = useState(null);
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    getMovies().then(setMovies).catch(console.error);
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title || !genre) return alert("Please fill all fields");
+    if (!title || !year || !rating || !poster)
+      return alert("Please fill all fields");
+
+    const movieData = { title, year, rating, poster };
 
     if (editId) {
+      await updateMovie(editId, movieData);
       setMovies(
         movies.map((movie) =>
-          movie.id === editId ? { ...movie, title, genre } : movie
+          movie.id === editId ? { ...movie, ...movieData } : movie
         )
       );
       setEditId(null);
     } else {
-      const newMovie = { id: Date.now(), title, genre };
+      const newMovie = await addMovie(movieData);
       setMovies([...movies, newMovie]);
     }
 
     setTitle("");
-    setGenre("");
+    setYear("");
+    setRating("");
+    setPoster("");
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
+    await deleteMovie(id);
     setMovies(movies.filter((movie) => movie.id !== id));
   };
 
   const handleEdit = (movie) => {
     setTitle(movie.title);
-    setGenre(movie.genre);
+    setYear(movie.year);
+    setRating(movie.rating);
+    setPoster(movie.poster);
     setEditId(movie.id);
   };
 
   return (
     <div className="px-5 pt-24">
-      <h1 className="text-3xl font-bold text-white mb-6">Daftar Saya</h1>
+      <h1 className="text-3xl font-bold text-white mb-6">My Movie List</h1>
 
-      {/* Form */}
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col sm:flex-row gap-3 mb-6"
+        className="flex flex-col sm:flex-row gap-3 mb-6 flex-wrap"
       >
         <input
           type="text"
@@ -57,10 +73,25 @@ function MyList() {
           className="px-3 py-2 rounded-md border border-gray-600 bg-gray-800 text-white flex-1"
         />
         <input
+          type="number"
+          placeholder="Year"
+          value={year}
+          onChange={(e) => setYear(e.target.value)}
+          className="px-3 py-2 rounded-md border border-gray-600 bg-gray-800 text-white w-28"
+        />
+        <input
+          type="number"
+          step="0.1"
+          placeholder="Rating"
+          value={rating}
+          onChange={(e) => setRating(e.target.value)}
+          className="px-3 py-2 rounded-md border border-gray-600 bg-gray-800 text-white w-28"
+        />
+        <input
           type="text"
-          placeholder="Genre"
-          value={genre}
-          onChange={(e) => setGenre(e.target.value)}
+          placeholder="Poster URL"
+          value={poster}
+          onChange={(e) => setPoster(e.target.value)}
           className="px-3 py-2 rounded-md border border-gray-600 bg-gray-800 text-white flex-1"
         />
         <button
@@ -71,22 +102,21 @@ function MyList() {
         </button>
       </form>
 
-      {/* Movie List */}
       <div className="flex flex-wrap gap-5">
         {movies.map((movie) => (
           <div
             key={movie.id}
             className="relative bg-[#1a1a1a] rounded-xl w-[180px] h-[350px] text-white shadow-lg overflow-hidden transform transition-transform hover:scale-110 cursor-pointer"
-            style={{
-              backgroundImage: "url('/src/assets/roll.png')",
-              backgroundSize: "240px",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-            }}
           >
+            <img
+              src={movie.poster}
+              alt={movie.title}
+              className="w-full h-[220px] object-cover"
+            />
             <div className="p-3">
-              <h3 className="font-semibold text-lg">{movie.title}</h3>
-              <p className="text-sm text-gray-300">{movie.genre}</p>
+              <h3 className="font-semibold text-lgtruncate w-full">{movie.title}</h3>
+              <p className="text-sm text-gray-300">{movie.year}</p>
+              <p className="text-sm text-yellow-400">⭐ {movie.rating}</p>
             </div>
 
             <div className="absolute bottom-3 left-3 flex gap-2">
