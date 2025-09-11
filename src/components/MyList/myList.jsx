@@ -1,13 +1,18 @@
 import { useState, useEffect } from "react";
-import {
-  getMovies,
-  addMovie,
-  updateMovie,
-  deleteMovie,
-} from "../../api";
+import { useMoviesStore } from "../../store/useMoviesStore";
+
 
 function MyList() {
-  const [movies, setMovies] = useState([]);
+  const {
+    movies,
+    fetchMovies,
+    addMovie,
+    updatedMovie,
+    deleteMovie,
+    loading,
+    error,
+  } = useMoviesStore();
+
   const [title, setTitle] = useState("");
   const [year, setYear] = useState("");
   const [rating, setRating] = useState("");
@@ -15,38 +20,26 @@ function MyList() {
   const [editId, setEditId] = useState(null);
 
   useEffect(() => {
-    getMovies().then(setMovies).catch(console.error);
+    fetchMovies();
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title || !year || !rating || !poster)
-      return alert("Please fill all fields");
+    if (!title || !year || !rating || !poster) return alert("Please fill all fields");
 
     const movieData = { title, year, rating, poster };
 
     if (editId) {
-      await updateMovie(editId, movieData);
-      setMovies(
-        movies.map((movie) =>
-          movie.id === editId ? { ...movie, ...movieData } : movie
-        )
-      );
+      await  updatedMovie(editId, movieData);
       setEditId(null);
     } else {
-      const newMovie = await addMovie(movieData);
-      setMovies([...movies, newMovie]);
+      await addMovie(movieData);
     }
 
     setTitle("");
     setYear("");
     setRating("");
     setPoster("");
-  };
-
-  const handleDelete = async (id) => {
-    await deleteMovie(id);
-    setMovies(movies.filter((movie) => movie.id !== id));
   };
 
   const handleEdit = (movie) => {
@@ -96,11 +89,15 @@ function MyList() {
         />
         <button
           type="submit"
-          className="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white transition"
+          className="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white transition disabled:opacity-50"
+          disabled={loading}
         >
           {editId ? "Update Movie" : "Add Movie"}
         </button>
       </form>
+
+      {loading && <p className="text-gray-400">Loading movies...</p>}
+      {error && <p className="text-red-500">Error: {error}</p>}
 
       <div className="flex flex-wrap gap-5">
         {movies.map((movie) => (
@@ -114,7 +111,9 @@ function MyList() {
               className="w-full h-[220px] object-cover"
             />
             <div className="p-3">
-              <h3 className="font-semibold text-lgtruncate w-full">{movie.title}</h3>
+              <h3 className="font-semibold text-lg truncate w-full">
+                {movie.title}
+              </h3>
               <p className="text-sm text-gray-300">{movie.year}</p>
               <p className="text-sm text-yellow-400">⭐ {movie.rating}</p>
             </div>
@@ -127,7 +126,7 @@ function MyList() {
                 ✏️ Edit
               </button>
               <button
-                onClick={() => handleDelete(movie.id)}
+                onClick={() => deleteMovie(movie.id)}
                 className="px-3 py-1 rounded-md bg-red-600 hover:bg-red-700 text-white text-sm"
               >
                 🗑️ Delete
